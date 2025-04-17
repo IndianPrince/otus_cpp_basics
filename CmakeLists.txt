@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 
-project(CurveInter CXX)
+project(hello_world CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
@@ -17,4 +17,9 @@ file(GLOB all_SRCS
     "${PROJECT_SOURCE_DIR}/src/*.cpp"
 )
 
-add_executable(CurveInter ${all_SRCS})
+# set_target_properties(hello_world PROPERTIES
+#     CXX_STANDARD 17
+#     CXX_STANDARD_REQUIRED ON
+# )
+
+add_executable(hello_world ${all_SRCS})
