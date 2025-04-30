@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(hello_world CXX)
+project(guess_a_num CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -22,4 +22,4 @@ file(GLOB all_SRCS
 #     CXX_STANDARD_REQUIRED ON
 # )
 
-add_executable(hello_world ${all_SRCS})
+add_executable(guess_a_num ${all_SRCS})
