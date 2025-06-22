@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(hello_world CXX)
+project(custom_containers CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -22,4 +22,4 @@ file(GLOB all_SRCS
 #     CXX_STANDARD_REQUIRED ON
 # )
 
-add_executable(hello_world ${all_SRCS})
+add_executable(custom_containers ${all_SRCS})
