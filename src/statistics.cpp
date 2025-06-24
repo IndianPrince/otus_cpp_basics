@@ -32,6 +32,9 @@ Mean::Mean()
 {
 }
 
+//-------------------------------------------------
+// Обновить значение среднего
+//---
 void Mean::update( double next ) 
 {
   double prevSum = m_mean * m_count;
@@ -49,6 +52,9 @@ StdDev::StdDev()
 {
 }
 
+//-------------------------------------------------
+// Обновить значение отклонения
+//---
 void StdDev::update( double next )
 {
   m_nums.push_back( next );
