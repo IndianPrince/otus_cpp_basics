@@ -71,16 +71,14 @@ public:
 
 class StdDev : public Mean
 {
-  double m_stdDev;
   std::vector<double> m_nums;
 
 public:
-  StdDev();
 
   void update( double next ) override;
 
-  double eval() const override { return m_stdDev; }
+  double eval() const override;
 
   const char * name() const override { return "StdDev"; }
 
-}; // Mean
+}; // StdDev
