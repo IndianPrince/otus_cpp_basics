@@ -46,7 +46,7 @@ TEST_F( CArrayFixture, addElementMid ) {
 }
 
 TEST_F( CArrayFixture, eraseElementBack ) {
-  size_t previous = container[8];
+  size_t previous = container[cnt-2];
   container.pop_back();
   EXPECT_EQ( cnt-1, container.size() );
   EXPECT_EQ( previous, *(container.end() - 1) );
@@ -64,7 +64,7 @@ TEST_F( CArrayFixture, eraseElementMid ) {
   size_t next = mid + 1; 
   container.erase( mid );
   EXPECT_EQ( cnt - 1, container.size() );
-  EXPECT_EQ( next, container[5] );
+  EXPECT_EQ( next, container[mid] );
 }
 
 TEST_F( CArrayFixture, getElementByIndex ) {
@@ -72,7 +72,7 @@ TEST_F( CArrayFixture, getElementByIndex ) {
 }
 
 TEST_F( CArrayFixture, getContainerSize ) {
-  EXPECT_EQ( 10, container.size() );
+  EXPECT_EQ( cnt, container.size() );
 }
 
 TEST_F( CArrayFixture, copyConstructorTest ) {

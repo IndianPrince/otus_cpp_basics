@@ -47,7 +47,7 @@ TEST_F( ListFixture, addElementMid ) {
 }
 
 TEST_F( ListFixture, eraseElementBack ) {
-  size_t previous = container[8];
+  size_t previous = container[cnt-2];
   container.pop_back();
   EXPECT_EQ( cnt-1, container.size() );
   EXPECT_EQ( previous, container.back() );
@@ -65,7 +65,7 @@ TEST_F( ListFixture, eraseElementMid ) {
   size_t next = mid + 1; 
   container.erase( mid );
   EXPECT_EQ( cnt - 1, container.size() );
-  EXPECT_EQ( next, container[5] );
+  EXPECT_EQ( next, container[mid] );
 }
 
 TEST_F( ListFixture, getElementByIndex ) {
@@ -73,7 +73,7 @@ TEST_F( ListFixture, getElementByIndex ) {
 }
 
 TEST_F( ListFixture, getContainerSize ) {
-  EXPECT_EQ( 10, container.size() );
+  EXPECT_EQ( cnt, container.size() );
 }
 
 TEST_F( ListFixture, copyConstructorTest ) {
