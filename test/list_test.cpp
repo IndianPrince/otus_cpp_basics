@@ -30,18 +30,20 @@ TEST( ListContainer, constructionTest ) {
 TEST_F( ListFixture, addElementBack ) {
   container.push_back( 100 );
   EXPECT_EQ( cnt+1, container.size() );
-  EXPECT_EQ( 100, *(container.end() - 1) );
+  EXPECT_EQ( 100, container.back() );
 }
 
 TEST_F(ListFixture, addElementFront ) {
   container.insert( container.begin(), 100 );
   EXPECT_EQ( cnt+1, container.size() );
-  EXPECT_EQ( 100, container[0] );
+  EXPECT_EQ( 100, container.front() );
 }
 
 TEST_F( ListFixture, addElementMid ) {
   size_t mid = cnt / 2;
-  container.insert( container.begin() + mid, 100 );
+  auto it = container.begin();
+  std::advance( it, mid );
+  container.insert( it, 100 );
   EXPECT_EQ( cnt+1, container.size() );
   EXPECT_EQ( 100, container[mid] );
 }
@@ -50,14 +52,14 @@ TEST_F( ListFixture, eraseElementBack ) {
   size_t previous = container[8];
   container.pop_back();
   EXPECT_EQ( cnt-1, container.size() );
-  EXPECT_EQ( previous, *(container.end() - 1) );
+  EXPECT_EQ( previous, container.back() );
 }
 
 TEST_F( ListFixture, eraseElementFront ) {
   size_t second = container[1];
   container.erase( container.begin() );
   EXPECT_EQ( cnt-1, container.size() );
-  EXPECT_EQ( second, *container.begin() );
+  EXPECT_EQ( second, container.front() );
 }
 
 TEST_F( ListFixture, eraseElementMid ) {
