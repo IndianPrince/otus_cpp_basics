@@ -53,6 +53,9 @@ public:
   void erase( size_t index );                       // Удалить эл-т по индексу
   void clear();                                     // Очистить список
   size_t size() const;                              // Дать кол-во элементов
+  // Оператор получения по индексу
+  T & operator[]( size_t index );
+  const T & operator[]( size_t index ) const;
 
   Iterator begin();                                 // Начало списка
   Iterator end();                                   // Конец списка (nullptr)
@@ -89,6 +92,39 @@ inline ListContainer<T>::~ListContainer()
   clear();
 }
 
+
+//---------------------------------------------
+// Выдать элемент по индексу
+//---------------------------------------------
+template <typename T>
+inline T & ListContainer<T>::operator[]( size_t index )
+{
+  if ( index >= length )
+    throw std::out_of_range( "Index out of bounds" );
+
+  Node* current = head;
+  for (size_t cnt = 0; cnt < index; ++cnt)
+    current = current->next();
+
+  return current->value;
+}
+
+
+//---------------------------------------------
+// Выдать элемент по индексу
+//---------------------------------------------
+template <typename T>
+const inline T & ListContainer<T>::operator[]( size_t index ) const
+{
+  if ( index >= length )
+    throw std::out_of_range( "Index out of bounds" );
+
+  Node* current = head;
+  for (size_t cnt = 0; cnt < index; ++cnt)
+    current = current->next();
+
+  return current->value;
+}
 
 //---------------------------------------------
 // Добавить элемент в конец
