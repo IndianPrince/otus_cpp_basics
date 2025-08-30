@@ -57,6 +57,10 @@ public:
   T & operator[]( size_t index );
   const T & operator[]( size_t index ) const;
 
+  T & front() { return head->value; }
+  const T & front() const { return head->value; }
+  T & back() { return tail->value; }
+  const T & back() const { return tail->value; }
   Iterator begin();                                 // Начало списка
   Iterator end();                                   // Конец списка (nullptr)
   Iterator erase( Iterator first, Iterator last );  // Удалить диапазон элементов
