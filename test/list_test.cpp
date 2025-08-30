@@ -1,0 +1,89 @@
+#include "custom_list.h"
+#include"container_test_funcs.h"
+#include <gtest/gtest.h>
+#include <iostream>
+
+struct ListFixture : public testing::Test 
+{
+  const size_t cnt = 10;
+  ListContainer<size_t> container;
+
+  void SetUp() override 
+  {
+    for ( size_t i = 0; i < cnt; i++ )
+      container.push_back( i );
+  }
+
+  void TearDown() override 
+  {
+    container.clear();
+  }
+
+};
+
+
+TEST( ListContainer, constructionTest ) {
+  EXPECT_TRUE( DefaultConstructionTest<ListContainer<size_t>>() );
+  EXPECT_TRUE( ReserveConstructionTest<ListContainer<size_t>>() );
+}
+
+TEST_F( ListFixture, addElementBack ) {
+  container.push_back( 100 );
+  EXPECT_EQ( cnt+1, container.size() );
+  EXPECT_EQ( 100, *(container.end() - 1) );
+}
+
+TEST_F(ListFixture, addElementFront ) {
+  container.insert( container.begin(), 100 );
+  EXPECT_EQ( cnt+1, container.size() );
+  EXPECT_EQ( 100, container[0] );
+}
+
+TEST_F( ListFixture, addElementMid ) {
+  size_t mid = cnt / 2;
+  container.insert( container.begin() + mid, 100 );
+  EXPECT_EQ( cnt+1, container.size() );
+  EXPECT_EQ( 100, container[mid] );
+}
+
+TEST_F( ListFixture, eraseElementBack ) {
+  size_t previous = container[8];
+  container.pop_back();
+  EXPECT_EQ( cnt-1, container.size() );
+  EXPECT_EQ( previous, *(container.end() - 1) );
+}
+
+TEST_F( ListFixture, eraseElementFront ) {
+  size_t second = container[1];
+  container.erase( container.begin() );
+  EXPECT_EQ( cnt-1, container.size() );
+  EXPECT_EQ( second, *container.begin() );
+}
+
+TEST_F( ListFixture, eraseElementMid ) {
+  size_t mid = cnt / 2;
+  size_t next = mid + 1; 
+  container.erase( mid );
+  EXPECT_EQ( cnt - 1, container.size() );
+  EXPECT_EQ( next, container[5] );
+}
+
+TEST_F( ListFixture, getElementByIndex ) {
+  EXPECT_EQ( cnt-3, container[cnt-3] );
+}
+
+TEST_F( ListFixture, getContainerSize ) {
+  EXPECT_EQ( 10, container.size() );
+}
+
+TEST_F( ListFixture, copyConstructorTest ) {
+  ListContainer<size_t> container2( container );
+  EXPECT_EQ( container.size(), container2.size() );
+  
+}
+
+int main( int argc, char** argv)
+{
+  testing::InitGoogleTest( &argc, argv );
+  return RUN_ALL_TESTS();
+}
