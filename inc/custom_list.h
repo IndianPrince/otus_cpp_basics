@@ -106,9 +106,9 @@ inline T & ListContainer<T>::operator[]( size_t index )
   if ( index >= length )
     throw std::out_of_range( "Index out of bounds" );
 
-  Node* current = head;
+  Node * current = head;
   for (size_t cnt = 0; cnt < index; ++cnt)
-    current = current->next();
+    current = current->next;
 
   return current->value;
 }
@@ -123,9 +123,9 @@ const inline T & ListContainer<T>::operator[]( size_t index ) const
   if ( index >= length )
     throw std::out_of_range( "Index out of bounds" );
 
-  Node* current = head;
+  Node * current = head;
   for (size_t cnt = 0; cnt < index; ++cnt)
-    current = current->next();
+    current = current->next;
 
   return current->value;
 }
