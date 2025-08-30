@@ -45,6 +45,7 @@ public:
   };
 
   ListContainer();                                  // Конструктор по умолчанию
+  ListContainer( const ListContainer & other );
   ~ListContainer();                                 // Деструктор
 
   void push_back( const T & value );                // Добавить эл-т в конец
@@ -59,6 +60,17 @@ public:
   Iterator erase( Iterator pos );                   // Удалить один элемент по итератору
   Iterator insert( Iterator pos, const T & value ); // Вставить эл-т перед позицией
 };
+
+
+//---------------------------------------------
+// Конструктор копирования
+//---------------------------------------------
+template <typename T>
+inline ListContainer<T>::ListContainer( const ListContainer & other ) 
+  : head( other.head )
+  , tail( other.tail )
+  , length( other.length ) 
+  {}
 
 
 //---------------------------------------------

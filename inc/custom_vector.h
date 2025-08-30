@@ -1,6 +1,8 @@
 #pragma once
 #include <iterator>
 #include <stdexcept>
+#include <new>
+#include <utility>
 
 //------------------------------------
 // Контейнер - вектор, аналог std::vector, 
@@ -44,13 +46,20 @@ public:
   };
 
   CArray() : _data( nullptr ), _capacity( 0 ), _length( 0 ) {}
-  CArray( size_t capacity ) : CArray() { _capacity = capacity; }
-  ~CArray() { delete[] _data; }
-
+  // Конструктор копирования
+  CArray( const CArray & other );
+  // Конструктор с резервированием
+  CArray( size_t capacity )
+    : _data( capacity ? static_cast<T *>( ::operator new( sizeof( T ) * capacity ) ) : nullptr )
+    , _capacity( capacity )
+    , _length( 0 )
+  {}
+  // Деструктор
+  ~CArray();
   void push_back( const T & value );         // Добавить эл-т в конец
   void pop_back();                           // Убрать/удалить эл-т с конца
   size_t size() const { return _length; }    // Дать кол-во элементов
-  void clear() { _length = 0; }              // Очитстить массив, оставить резервирование
+  void clear();                              // Очитстить массив, оставить резервирование
   void erase( size_t index );                // Удалить эл-т по индексу
 
   // Операторы получения по индексу
@@ -70,6 +79,34 @@ private:
 
 
 //---------------------------------------------
+// Конструктор копирования
+//---------------------------------------------
+template<typename T>
+inline CArray<T>::CArray( const CArray & other )
+  : _data( other._capacity ? static_cast<T *>( ::operator new( sizeof( T ) * other._capacity ) ) : nullptr )
+  , _capacity( other._capacity )
+  , _length( 0 )
+{
+  for ( size_t i = 0; i < other._length; ++i ) {
+    new ( _data + i ) T( other._data[i] );
+    ++_length;
+  }
+}
+
+
+//---------------------------------------------
+// Деструктор
+//---------------------------------------------
+template<typename T>
+inline CArray<T>::~CArray()
+{
+  for ( size_t i = 0; i < _length; ++i )
+    _data[i].~T();
+  ::operator delete( _data );
+}
+
+
+//---------------------------------------------
 // Добавить эл-т в конец
 //---------------------------------------------
 template <typename T>
@@ -77,7 +114,9 @@ inline void CArray<T>::push_back( const T & value )
 {
   if ( _length == _capacity )
     resize( _capacity == 0 ? 4 : _capacity * 2 );
-  _data[_length++] = value;
+  // ub если что-то уже есть на _data + _length, проверок не делаем, есть resize
+  new ( _data + _length ) T( value ); 
+  ++_length;
 }
 
 
@@ -88,7 +127,7 @@ template <typename T>
 inline void CArray<T>::pop_back()
 {
   if ( _length == 0 )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Size is zero" );
   _data[_length - 1].~T();
   --_length;
 }
@@ -101,7 +140,7 @@ template <typename T>
 inline T & CArray<T>::operator[]( size_t index )
 {
   if ( index >= _length )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Index out of bounds" );
   return _data[index];
 }
 
@@ -113,7 +152,7 @@ template <typename T>
 inline const T & CArray<T>::operator[]( size_t index ) const
 {
   if ( index >= _length )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Index out of bounds" );
   return _data[index];
 }
 
@@ -125,10 +164,12 @@ template <typename T>
 inline void CArray<T>::erase( size_t index )
 {
   if ( index >= _length )
-    throw std::out_of_range( "" );
-  _data[index].~T();
+    throw std::out_of_range( "Index out of bounds" );
+
   for ( size_t i = index; i < _length - 1; ++i )
-    _data[i] = _data[i + 1];
+    _data[i] = std::move( _data[i + 1] );
+
+  _data[_length - 1].~T();
   --_length;
 }
 
@@ -143,19 +184,20 @@ inline typename CArray<T>::Iterator CArray<T>::erase( Iterator first, Iterator l
   T * p2 = last.getPtr();
 
   if ( p1 < _data || p2 > _data + _length || p1 > p2 )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Iterator out of bounds" );
 
-  size_t start = p1 - _data;
-  size_t end = p2 - _data;
+  size_t start = static_cast<size_t>( p1 - _data );
+  size_t end = static_cast<size_t>( p2 - _data );
   size_t count = end - start;
 
-  for ( size_t i = start; i < end; ++i )
+  for ( size_t i = end; i < _length; ++i )
+    _data[i - count] = std::move( _data[i] );
+
+  for ( size_t i = _length - count; i < _length; ++i )
     _data[i].~T();
 
-  for ( size_t i = end; i < _length; ++i )
-    _data[i - count] = _data[i];
-
   _length -= count;
+
   return Iterator( _data + start );
 }
 
@@ -171,13 +213,14 @@ inline typename CArray<T>::Iterator CArray<T>::erase( Iterator pos )
   if ( p < _data || p >= _data + _length )
     throw std::out_of_range( "" );
 
-  size_t index = p - _data;
-  _data[index].~T();
+  size_t index = static_cast<size_t>( p - _data );
 
   for ( size_t i = index; i < _length - 1; ++i )
-    _data[i] = _data[i + 1];
+    _data[i] = std::move( _data[i + 1] );
 
+  _data[_length - 1].~T();
   --_length;
+
   return Iterator( _data + index );
 }
 
@@ -209,15 +252,34 @@ inline typename CArray<T>::Iterator CArray<T>::insert( Iterator pos, const T & v
 
 
 //---------------------------------------------
+// Очистить массив
+//---------------------------------------------
+template <typename T>
+inline void CArray<T>::clear()
+{
+  for ( size_t i = 0; i < _length; ++i )
+    _data[i].~T();
+  _length = 0;
+}
+
+
+//---------------------------------------------
 // Изменить размер массива
 //---------------------------------------------
 template <typename T>
 inline void CArray<T>::resize( size_t capacity )
 {
-  T * new_data = new T[capacity];
-  for ( size_t i = 0; i < _length; ++i )
-    new_data[i] = _data[i];
-  delete[] _data;
+  if ( capacity < _capacity )
+    throw std::out_of_range( "New capacity is less than old capcity" );
+
+  T * new_data = static_cast<T *>( ::operator new( sizeof( T ) * capacity ) );
+
+  for ( size_t i = 0; i < _length; ++i ) {
+    new ( new_data + i ) T( std::move( _data[i] ) );
+    _data[i].~T();
+  }
+
+  ::operator delete( _data );
   _data = new_data;
   _capacity = capacity;
 }
