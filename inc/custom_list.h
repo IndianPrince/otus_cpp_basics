@@ -74,10 +74,11 @@ public:
 //---------------------------------------------
 template <typename T>
 inline ListContainer<T>::ListContainer( const ListContainer & other ) 
-  : head( other.head )
-  , tail( other.tail )
-  , length( other.length ) 
-  {}
+  : ListContainer()
+{
+  for (Node* cur = other.head; cur != nullptr; cur = cur->next) 
+    push_back(cur->value);
+}
 
 
 //---------------------------------------------
