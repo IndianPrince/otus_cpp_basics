@@ -1,7 +1,6 @@
 #include "custom_vector.h"
 #include"container_test_funcs.h"
 #include <gtest/gtest.h>
-#include <iostream>
 
 struct CArrayFixture : public testing::Test 
 {
@@ -80,10 +79,4 @@ TEST_F( CArrayFixture, copyConstructorTest ) {
   CArray<size_t> container2( container );
   EXPECT_EQ( container.size(), container2.size() );
   
-}
-
-int main( int argc, char** argv)
-{
-  testing::InitGoogleTest( &argc, argv );
-  return RUN_ALL_TESTS();
 }

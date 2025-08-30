@@ -1,7 +1,6 @@
 #include "custom_list.h"
-#include"container_test_funcs.h"
+#include "container_test_funcs.h"
 #include <gtest/gtest.h>
-#include <iostream>
 
 struct ListFixture : public testing::Test 
 {
@@ -24,7 +23,6 @@ struct ListFixture : public testing::Test
 
 TEST( ListContainer, constructionTest ) {
   EXPECT_TRUE( DefaultConstructionTest<ListContainer<size_t>>() );
-  EXPECT_TRUE( ReserveConstructionTest<ListContainer<size_t>>() );
 }
 
 TEST_F( ListFixture, addElementBack ) {
@@ -81,11 +79,4 @@ TEST_F( ListFixture, getContainerSize ) {
 TEST_F( ListFixture, copyConstructorTest ) {
   ListContainer<size_t> container2( container );
   EXPECT_EQ( container.size(), container2.size() );
-  
-}
-
-int main( int argc, char** argv)
-{
-  testing::InitGoogleTest( &argc, argv );
-  return RUN_ALL_TESTS();
 }

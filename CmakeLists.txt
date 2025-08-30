@@ -37,6 +37,7 @@ add_executable(containers ${all_SRCS})
 
 add_executable(
     test_containers
+    test/tests_main.cpp
     test/carray_test.cpp
     test/list_test.cpp
     test/container_test_funcs.h)
