@@ -1,25 +1,17 @@
-cmake_minimum_required(VERSION 3.5)
-
-project(hello_world CXX)
+cmake_minimum_required(VERSION 3.7.2)
+project(crc32_crack CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+add_executable(crc32_crack 
+        src/main.cpp
+        src/CRC32.cpp
+        src/CRC32.hpp
+        src/IO.cpp
+        src/IO.hpp)
 
-include_directories(
-    ${PROJECT_SOURCE_DIR}/inc
-    ${PROJECT_SOURCE_DIR}/src
-    )
-
-file(GLOB all_SRCS
-    "${PROJECT_SOURCE_DIR}/inc/*.h"
-    "${PROJECT_SOURCE_DIR}/src/*.cpp"
-)
-
-# set_target_properties(hello_world PROPERTIES
-#     CXX_STANDARD 17
-#     CXX_STANDARD_REQUIRED ON
-# )
-
-add_executable(hello_world ${all_SRCS})
+if (MSVC)
+    target_compile_options(crc32_crack PUBLIC /W4)
+else ()
+    target_compile_options(crc32_crack PUBLIC -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion)
+endif ()
