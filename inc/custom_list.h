@@ -157,7 +157,7 @@ template <typename T>
 inline void ListContainer<T>::pop_back()
 {
   if ( !tail )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Tail is null" );
 
   Node * to_delete = tail;
   tail = tail->prev;
@@ -179,7 +179,7 @@ template <typename T>
 inline void ListContainer<T>::erase( size_t index )
 {
   if ( index >= length )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Index out of bounds" );
 
   size_t currentInd = 0;
   Node * current = head;
@@ -292,7 +292,7 @@ inline typename ListContainer<T>::Iterator ListContainer<T>::erase( Iterator pos
 {
   Node * curr = pos.getNode();
   if ( !curr )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Index out of bounds" );
 
   Node * next = curr->next;
 

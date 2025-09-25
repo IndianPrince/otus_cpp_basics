@@ -211,7 +211,7 @@ inline typename CArray<T>::Iterator CArray<T>::erase( Iterator pos )
   T * p = pos.getPtr();
 
   if ( p < _data || p >= _data + _length )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Iterator out of bounds" );
 
   size_t index = static_cast<size_t>( p - _data );
 
@@ -234,7 +234,7 @@ inline typename CArray<T>::Iterator CArray<T>::insert( Iterator pos, const T & v
   T * p = pos.getPtr();
 
   if ( p < _data || p > _data + _length )
-    throw std::out_of_range( "" );
+    throw std::out_of_range( "Iterator out of bounds" );
 
   size_t index = p - _data;
 
