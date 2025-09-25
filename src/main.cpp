@@ -78,8 +78,10 @@ std::vector<char> hack(const std::vector<char> &original,
     start = end;
   }
 
-  for (auto& thread : threads) 
-    thread.join();
+  for (auto& thread : threads) {
+    if ( thread.joinable() )
+      thread.join();
+  }
   
   if (!found.load()) 
     throw std::logic_error("Can't hack");
